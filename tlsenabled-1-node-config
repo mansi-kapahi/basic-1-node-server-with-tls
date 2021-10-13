@@ -1,0 +1,34 @@
+1. config file for tls server 
+
+storage "raft" {
+  path    = "./vault/data"
+  node_id = "node1"
+}
+
+listener "tcp" {
+  address     = "0.0.0.0:8200"
+tls_disable =false
+tls_cert_file="/home/ubuntu/vault-demo/certificate.crt"
+tls_key_file="/home/ubuntu/vault-demo/privateKey.key"
+
+}
+
+api_addr = "https://127.0.0.1:8200"
+cluster_addr = "https://127.0.0.1:8201"
+ui = true
+license_path = "./.license" 
+disable_mlock = true
+raw_storage_endpoint=true
+log_level="trace"
+
+2. generate the key and the certificate file 
+
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt
+
+3. if you will get the status of the vault cluster then it will throw the errors of certificate not recognized  hence 
+
+
+vault operator init   -tls-skip-verify -n=1 -t=1 >unseal.txt  
+vault operator  unseal  --tls-skip-verify  <unsealkey>
+
+vault status --tls-skip-verify  
